@@ -1,1 +1,59 @@
-<p>drum-form works!</p>
+<form [formGroup]="drumForm" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+  <h2 class="text-lg font-bold text-slate-800 mb-6 border-b border-slate-100 pb-2">Drum Metadata</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase">Status</label>
+      <select formControlName="status" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase">Generator</label>
+      <input type="text" formControlName="generator" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase">Treatment Code</label>
+      <input type="text" formControlName="treatmentCode" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase">Drum Size (GAL)</label>
+      <select formControlName="drumSize" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
+        @for (size of sizes; track size) {
+          <option [value]="size">{{ size }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase">Drum Type</label>
+      <select formControlName="drumType" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
+        @for (type of types; track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1.5 lg:col-span-2">
+      <label class="text-xs font-bold text-slate-500 uppercase">Proper Shipping Name (PSN)</label>
+      <input type="text" formControlName="psn" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase">Hazard Class</label>
+      <input type="text" formControlName="hazardClass" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase">UN Number</label>
+      <input type="text" formControlName="unNumber" class="border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+
+  </div>
+</form>

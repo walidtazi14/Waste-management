@@ -1,8 +1,8 @@
 import { Chemical } from './chemical.type';
 
-export type DrumStatus = 'Pending' | 'In Treatment' | 'Completed';
-export type DrumSize = '5G' | '15G' | '30G' | '55G' | '85G';
-export type DrumType = 'Poly' | 'Steel' | 'Fiber';
+export type DrumStatus = 'IN PROGRESS' | 'WAITING APPROVAL' | 'WAITING EXPEDITION' | 'DONE';
+export type DrumSize = '5' | '14' | '20' | '30' | '55';
+export type DrumType = 'Poly' | 'Steel' | 'DF' | 'DM' | 'DP' | 'CF';
 
 export interface Drum {
   drumId: string;
@@ -20,4 +20,5 @@ export interface Drum {
   oxidizer: string;
   nfpaClass: string;
   chemicals: Chemical[];
+  updatedAt: string;
 }

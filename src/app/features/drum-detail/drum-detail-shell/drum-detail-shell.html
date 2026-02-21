@@ -1,1 +1,58 @@
-<p>drum-detail-shell works!</p>
+<div class="h-full flex flex-col max-w-7xl mx-auto w-full pb-12">
+
+  @if (drum) {
+    <header class="mb-6 flex justify-between items-end">
+      <div>
+        <a routerLink="/dashboard" class="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+          Back to Board
+        </a>
+        <h1 class="text-3xl font-bold text-slate-800 flex items-center gap-3">
+          {{ drum.drumId }}
+          <span class="text-sm bg-slate-200 text-slate-600 px-3 py-1 rounded-full font-semibold">{{ drum.status }}</span>
+        </h1>
+      </div>
+
+      <div class="flex gap-3">
+        <button class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-medium py-2 px-4 rounded-xl shadow-sm transition-colors">
+          Print Labels
+        </button>
+        <button (click)="saveDrum()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-xl shadow-sm transition-colors">
+          Save Changes
+        </button>
+      </div>
+    </header>
+
+    <div class="flex flex-col gap-6">
+
+      <app-drum-form
+        [drum]="drum"
+        (formChange)="onFormChanged($event)">
+      </app-drum-form>
+
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 min-h-[300px]">
+         <h2 class="text-lg font-bold text-slate-800 mb-6 border-b border-slate-100 pb-2">Chemical Inventory</h2>
+         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 min-h-[300px]">
+         <div class="flex justify-between items-end mb-6 border-b border-slate-100 pb-2">
+           <h2 class="text-lg font-bold text-slate-800">Chemical Inventory</h2>
+           <span class="text-sm font-semibold text-slate-400">{{ drum.chemicals?.length || 0 }} Items</span>
+         </div>
+
+         <app-chemical-table
+            [chemicals]="drum.chemicals || []"
+            (chemicalsChange)="onChemicalsChanged($event)">
+         </app-chemical-table>
+      </div>
+      </div>
+
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center h-64">
+      <h2 class="text-xl font-bold text-slate-700">Drum Not Found</h2>
+      <p class="text-slate-500 mt-2">The drum ID you are looking for does not exist in our system.</p>
+      <a routerLink="/dashboard" class="mt-4 text-blue-600 font-medium hover:underline">Return to Dashboard</a>
+    </div>
+  }
+</div>

@@ -6,19 +6,17 @@ import { Drum } from '../models/drum.type';
   providedIn: 'root'
 })
 export class DrumService {
-  // Mock Data
   private mockDrums: Drum[] = [
     {
-      drumId: 'DRM-1001', status: 'Pending', treatmentCode: 'TC-01', generator: 'Acme Corp',
-      address: '123 Industrial Way', epaId: 'EPA123456789', drumSize: '55G', drumType: 'Steel',
-      psn: 'Waste Flammable Liquid, n.o.s.', unNumber: 'UN1993', hazardClass: '3', pg: 'II',
-      oxidizer: 'No', nfpaClass: '3', chemicals: []
-    },
-    {
-      drumId: 'DRM-1002', status: 'In Treatment', treatmentCode: 'TC-02', generator: 'TechDyne',
-      address: '404 Silicon Ave', epaId: 'EPA987654321', drumSize: '30G', drumType: 'Poly',
-      psn: 'Waste Corrosive Liquid, acidic', unNumber: 'UN3264', hazardClass: '8', pg: 'III',
-      oxidizer: 'No', nfpaClass: '2', chemicals: []
+      drumId: '588239-106', status: 'IN PROGRESS', treatmentCode: 'LRCTD', generator: 'CRI Environnement',
+      address: '123 Industrial Way', epaId: 'N/A', drumSize: '55', drumType: 'DF',
+      psn: 'Water-reactive solid, toxic, N.O.S', unNumber: 'UN 3134', hazardClass: '4.3', pg: 'I',
+      oxidizer: 'No', nfpaClass: 'N/A',
+      chemicals: [
+        { id: 1, name: 'calcium carbide', qty: '2', size: '2,5 kg', slg: 'g', ox: '', nfpa: '', wasteCodes: 'RD4.3 gr I' },
+        { id: 2, name: 'sodium borohydride', qty: '1', size: '500g', slg: 'p', ox: '', nfpa: '', wasteCodes: 'RD4.3 gr I' }
+      ],
+      updatedAt: '2/21/2026'
     }
   ];
 
@@ -31,14 +29,16 @@ export class DrumService {
     return this.drums$;
   }
 
+  // Restored method
   getDrumById(id: string): Drum | undefined {
     return this.drumsSubject.value.find(d => d.drumId === id);
   }
 
-  updateDrumStatus(drumId: string, newStatus: any) {
+  // Added update method for saving changes
+  updateDrum(updatedDrum: Partial<Drum> & { drumId: string }) {
     const currentDrums = this.drumsSubject.value;
     const updatedDrums = currentDrums.map(drum =>
-      drum.drumId === drumId ? { ...drum, status: newStatus } : drum
+      drum.drumId === updatedDrum.drumId ? { ...drum, ...updatedDrum } : drum
     );
     this.drumsSubject.next(updatedDrums);
   }
