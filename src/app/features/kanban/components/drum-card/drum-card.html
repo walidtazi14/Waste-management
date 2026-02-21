@@ -1,0 +1,18 @@
+<div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:shadow-md hover:border-blue-300 transition-all"
+     [routerLink]="['/drum', drum.drumId]">
+
+  <div class="flex justify-between items-start mb-2">
+    <span class="text-sm font-bold text-blue-600">{{ drum.drumId }}</span>
+    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 text-slate-600">
+      {{ drum.drumSize }} {{ drum.drumType }}
+    </span>
+  </div>
+
+  <h3 class="font-medium text-gray-800 truncate" [title]="drum.generator">{{ drum.generator }}</h3>
+  <p class="text-xs text-gray-500 mt-1 truncate" [title]="drum.psn">{{ drum.psn }}</p>
+
+  <div class="mt-3 flex gap-2">
+    <span class="text-xs px-2 py-1 rounded bg-red-100 text-red-700 font-medium">Class {{ drum.hazardClass }}</span>
+    <span class="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800 font-medium">{{ drum.unNumber }}</span>
+  </div>
+</div>

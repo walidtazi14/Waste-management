@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router';
 
 // --- Types & Interfaces ---
 
-interface Product {
+interface chemical {
   id: number;
   name: string;
   qty: string;
@@ -36,7 +36,7 @@ interface HeaderInfo {
 interface DrumList {
   id: string;
   headerInfo: HeaderInfo;
-  products: Product[];
+  chemicals: chemical[];
   updatedAt: string;
 }
 
@@ -132,7 +132,7 @@ export class App {
         oxidizer: 'No',
         nfpaClass: 'N/A'
       },
-      products: [
+      chemicals: [
         { id: 1, name: 'calcium carbide', qty: '2', size: '2,5 kg', slg: 'g', ox: '', nfpa: '', wasteCodes: 'RD4.3 gr I' },
         { id: 2, name: 'sodium borohydride', qty: '1', size: '500g', slg: 'p', ox: '', nfpa: '', wasteCodes: 'RD4.3 gr I' },
       ],
@@ -170,7 +170,7 @@ export class App {
         oxidizer: '',
         nfpaClass: ''
       },
-      products: [],
+      chemicals: [],
       updatedAt: new Date().toLocaleDateString()
     };
     this.lists.update(l => [...l, newList]);
@@ -219,7 +219,7 @@ export class App {
     }));
   }
 
-  updateProduct(productId: number, field: keyof Product, value: string) {
+  updatechemical(chemicalId: number, field: keyof chemical, value: string) {
     const listId = this.selectedListId();
     if (!listId) return;
 
@@ -227,8 +227,8 @@ export class App {
       if (list.id === listId) {
         return {
           ...list,
-          products: list.products.map(p =>
-            p.id === productId ? { ...p, [field]: value } : p
+          chemicals: list.chemicals.map(p =>
+            p.id === chemicalId ? { ...p, [field]: value } : p
           ),
           updatedAt: new Date().toLocaleDateString()
         };
@@ -237,20 +237,20 @@ export class App {
     }));
 
     if (field === 'name') {
-      this.activeSearch.set({ id: productId, query: value });
+      this.activeSearch.set({ id: chemicalId, query: value });
     }
   }
 
-  addProduct() {
+  addchemical() {
     const listId = this.selectedListId();
     if (!listId) return;
 
     this.lists.update(lists => lists.map(list => {
       if (list.id === listId) {
-        const nextId = list.products.length > 0 ? Math.max(...list.products.map(p => p.id)) + 1 : 1;
+        const nextId = list.chemicals.length > 0 ? Math.max(...list.chemicals.map(p => p.id)) + 1 : 1;
         return {
           ...list,
-          products: [...list.products, { id: nextId, name: '', qty: '1', size: '', slg: '', ox: '', nfpa: '', wasteCodes: '' }],
+          chemicals: [...list.chemicals, { id: nextId, name: '', qty: '1', size: '', slg: '', ox: '', nfpa: '', wasteCodes: '' }],
           updatedAt: new Date().toLocaleDateString()
         };
       }
@@ -258,7 +258,7 @@ export class App {
     }));
   }
 
-  removeProduct(productId: number) {
+  removechemical(chemicalId: number) {
     const listId = this.selectedListId();
     if (!listId) return;
 
@@ -266,7 +266,7 @@ export class App {
       if (list.id === listId) {
         return {
           ...list,
-          products: list.products.filter(p => p.id !== productId),
+          chemicals: list.chemicals.filter(p => p.id !== chemicalId),
           updatedAt: new Date().toLocaleDateString()
         };
       }
@@ -274,9 +274,9 @@ export class App {
     }));
   }
 
-  selectChemical(productId: number, chemical: { name: string, code: string }) {
-    this.updateProduct(productId, 'name', chemical.name);
-    this.updateProduct(productId, 'wasteCodes', chemical.code);
+  selectChemical(chemicalId: number, chemical: { name: string, code: string }) {
+    this.updatechemical(chemicalId, 'name', chemical.name);
+    this.updatechemical(chemicalId, 'wasteCodes', chemical.code);
     this.activeSearch.set({ id: null, query: '' });
   }
 
@@ -306,7 +306,7 @@ export class App {
     return null;
   }
 
-  async suggestWasteCode(productId: number, chemName: string) {
+  async suggestWasteCode(chemicalId: number, chemName: string) {
     if (!chemName) return;
     this.isAiLoading.set(true);
     this.aiError.set(null);
@@ -314,7 +314,7 @@ export class App {
       const prompt = `Hazardous waste code for chemical: "${chemName}". Return ONLY the code (e.g., RD4.3).`;
       const code = await this.callGemini(prompt, "Waste specialist.");
       if (code) {
-        this.updateProduct(productId, 'wasteCodes', code.trim());
+        this.updatechemical(chemicalId, 'wasteCodes', code.trim());
       }
     } catch (err) {
       this.aiError.set("AI failed to suggest code.");
@@ -326,13 +326,13 @@ export class App {
   async autoClassifyDrum() {
     const listId = this.selectedListId();
     const list = this.lists().find(l => l.id === listId);
-    if (!list || list.products.length === 0) return;
+    if (!list || list.chemicals.length === 0) return;
 
     this.isAiLoading.set(true);
     this.aiError.set(null);
     try {
-      const productList = list.products.map(p => p.name).join(", ");
-      const prompt = `Analyze this chemical list for a lab pack drum: [${productList}]. Return ONLY JSON: { "psn": "string", "unNumber": "string", "hazardClass": "string", "pg": "string" }.`;
+      const chemicalList = list.chemicals.map(p => p.name).join(", ");
+      const prompt = `Analyze this chemical list for a lab pack drum: [${chemicalList}]. Return ONLY JSON: { "psn": "string", "unNumber": "string", "hazardClass": "string", "pg": "string" }.`;
       const resultText = await this.callGemini(prompt, "Hazardous waste specialist. Return JSON format only.");
       if (resultText) {
          const cleaned = resultText.replace(/```json|```/g, "").trim();
@@ -356,7 +356,7 @@ export class App {
     if (!list) return;
 
     const headers = ["NO.", "CHEMICAL NAME", "QTY", "SIZE", "S/L/G", "Waste Codes"];
-    const rows = list.products.map((p, i) => [i + 1, p.name, p.qty, p.size, p.slg, p.wasteCodes]);
+    const rows = list.chemicals.map((p, i) => [i + 1, p.name, p.qty, p.size, p.slg, p.wasteCodes]);
     let csv = "data:text/csv;charset=utf-8,";
     csv += `Drum ID,${list.headerInfo.drumId}\nGenerator,${list.headerInfo.generator}\nStatus,${list.headerInfo.status}\n\n`;
     csv += headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
