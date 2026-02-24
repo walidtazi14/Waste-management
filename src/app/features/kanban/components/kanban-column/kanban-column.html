@@ -30,7 +30,7 @@
 
   <div class="flex flex-col gap-3">
     @if (drums.length > 0) {
-      @for (drum of drums; track drum.drumId) {
+      @for (drum of drums; track drum.id) {
         <app-drum-card [drum]="drum"></app-drum-card>
       }
     } @else {

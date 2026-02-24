@@ -18,6 +18,6 @@ export class KanbanShell {
 
   getDrumsByStatus(status: DrumStatus, drums: Drum[] | null): Drum[] {
     if (!drums) return [];
-    return drums.filter(d => d.status === status);
+    return drums.filter(d => d.Status === status);
   }
 }

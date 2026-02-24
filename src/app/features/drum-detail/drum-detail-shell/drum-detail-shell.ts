@@ -1,15 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DrumService } from '../../../shared/services/drum';
-import { Drum } from '../../../shared/models/drum.type';
+import { Drum, DrumContent } from '../../../shared/models/drum.type';
 import { DrumForm } from '../components/drum-form/drum-form';
 import { ChemicalTable } from '../components/chemical-table/chemical-table'; // We will build this next
-import { Chemical } from '../../../shared/models/chemical.type';
 
 @Component({
   selector: 'app-drum-detail-shell',
   standalone: true,
-  imports: [RouterLink, DrumForm, ChemicalTable],
+  imports: [CommonModule, RouterLink, DrumForm, ChemicalTable],
   templateUrl: './drum-detail-shell.html'
 })
 export class DrumDetailShell implements OnInit {
@@ -17,6 +17,7 @@ export class DrumDetailShell implements OnInit {
   private drumService = inject(DrumService);
 
   drum: Drum | undefined;
+  mappedChemicals: DrumContent[] = [];
   pendingChanges: Partial<Drum> = {};
 
   ngOnInit(): void {
@@ -25,7 +26,10 @@ export class DrumDetailShell implements OnInit {
 
     // 2. Fetch the drum from our service
     if (id) {
-      this.drum = this.drumService.getDrumById(id);
+      this.drum = this.drumService.getDrumById(+id); // Parse to number
+      if (this.drum) {
+        this.mappedChemicals = this.drum.Contents || [];
+      }
     }
   }
 
@@ -33,21 +37,22 @@ export class DrumDetailShell implements OnInit {
   onFormChanged(updatedFields: Partial<Drum>) {
     this.pendingChanges = { ...this.pendingChanges, ...updatedFields };
   }
-  onChemicalsChanged(updatedChemicals: Chemical[]) {
-    this.pendingChanges = { ...this.pendingChanges, chemicals: updatedChemicals };
+  onChemicalsChanged(updatedChemicals: DrumContent[]) {
+    this.mappedChemicals = updatedChemicals;
+
+    this.pendingChanges = { ...this.pendingChanges, Contents: updatedChemicals };
 
     // Update local drum object so UI stays synced immediately
     if (this.drum) {
-      this.drum.chemicals = updatedChemicals;
+      this.drum.Contents = updatedChemicals;
     }
   }
 
   // 4. Save logic (mocked for now)
   saveDrum() {
     if (this.drum) {
-      // In a real app, you'd call this.drumService.updateDrum(...) here
-      console.log('Saving updates to DB:', this.pendingChanges);
-      alert('Drum updated successfully!');
+      this.drumService.updateDrum({ ...this.pendingChanges, id: this.drum.id });
+      this.pendingChanges = {};
     }
   }
 }

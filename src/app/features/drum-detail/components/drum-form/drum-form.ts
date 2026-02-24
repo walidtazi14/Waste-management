@@ -36,14 +36,24 @@ export class DrumForm implements OnChanges {
 
     // Listen to form changes and emit them up to the parent
     this.drumForm.valueChanges.subscribe(value => {
-      this.formChange.emit(value);
+      this.formChange.emit({
+        Status: value.status,
+        Generator: value.generator,
+        DrumSize: value.drumSize,
+        TreatmentCode: value.treatmentCode
+      });
     });
   }
 
   // When the input 'drum' changes, patch the form with the new values
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['drum'] && changes['drum'].currentValue) {
-      this.drumForm.patchValue(this.drum, { emitEvent: false });
+      this.drumForm.patchValue({
+        status: this.drum.Status,
+        generator: this.drum.Generator,
+        drumSize: this.drum.DrumSize,
+        treatmentCode: this.drum.TreatmentCode
+      }, { emitEvent: false });
     }
   }
 }

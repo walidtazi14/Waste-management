@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Drum } from '../models/drum.type';
+import { DrumContent } from '../models/drum.type';
 
 @Injectable({
   providedIn: 'root'
@@ -8,15 +9,28 @@ import { Drum } from '../models/drum.type';
 export class DrumService {
   private mockDrums: Drum[] = [
     {
-      drumId: '588239-106', status: 'IN PROGRESS', treatmentCode: 'LRCTD', generator: 'CRI Environnement',
-      address: '123 Industrial Way', epaId: 'N/A', drumSize: '55', drumType: 'DF',
-      psn: 'Water-reactive solid, toxic, N.O.S', unNumber: 'UN 3134', hazardClass: '4.3', pg: 'I',
-      oxidizer: 'No', nfpaClass: 'N/A',
-      chemicals: [
-        { id: 1, name: 'calcium carbide', qty: '2', size: '2,5 kg', slg: 'g', ox: '', nfpa: '', wasteCodes: 'RD4.3 gr I' },
-        { id: 2, name: 'sodium borohydride', qty: '1', size: '500g', slg: 'p', ox: '', nfpa: '', wasteCodes: 'RD4.3 gr I' }
+      id: 99,
+      DrumId: 'DRUM-12345',
+      Status: 'IN PROGRESS',
+      TreatmentCode: 'INCIN',
+      Generator: 'Acme Corp',
+      DrumSize: '55',
+      Oxidizer: false,
+      UpdatedAt: '2026-02-24T14:30:00Z',
+      Contents: [
+        {
+          ChemicalId: 1,
+          qty: '40 lbs',
+          size: 'chunks',
+          nfpa: '1-0-0',
+          Chemical: {
+            id: 1,
+            name: 'Sulfuric Acid',
+            state: 'Liquid',
+            wasteCode: { code: 'D002', Class: 'Corrosive', subclass: 'Acid', group: 'II' }
+          }
+        }
       ],
-      updatedAt: '2/21/2026'
     }
   ];
 
@@ -30,15 +44,47 @@ export class DrumService {
   }
 
   // Restored method
-  getDrumById(id: string): Drum | undefined {
-    return this.drumsSubject.value.find(d => d.drumId === id);
+  getDrumById(id: number): Drum | undefined {
+    return this.drumsSubject.value.find(d => d.id === id);
   }
 
   // Added update method for saving changes
-  updateDrum(updatedDrum: Partial<Drum> & { drumId: string }) {
+  updateDrum(updatedDrum: Partial<Drum> & { id: number }) {
     const currentDrums = this.drumsSubject.value;
     const updatedDrums = currentDrums.map(drum =>
-      drum.drumId === updatedDrum.drumId ? { ...drum, ...updatedDrum } : drum
+      drum.id === updatedDrum.id ? { ...drum, ...updatedDrum } : drum
+    );
+    this.drumsSubject.next(updatedDrums);
+  }
+
+  searchDrums(query: { drumId?: string; status?: string }): Drum[] {
+    let drums = this.drumsSubject.value;
+    if (query.drumId) {
+      drums = drums.filter(d => d.DrumId.includes(query.drumId!));
+    }
+    if (query.status) {
+      drums = drums.filter(d => d.Status === query.status);
+    }
+    return drums;
+  }
+
+  createDrum(drum: Drum): Drum {
+    const newDrum = { ...drum, Contents: [], UpdatedAt: new Date().toISOString() };
+    this.drumsSubject.next([...this.drumsSubject.value, newDrum]);
+    return newDrum;
+  }
+
+  addChemicalToDrum(drumId: string, content: DrumContent): void {
+    const currentDrums = this.drumsSubject.value;
+    const updatedDrums = currentDrums.map(drum =>
+      drum.DrumId === drumId ? {
+        ...drum,
+        Contents: [
+          ...drum.Contents,
+          content
+        ],
+        UpdatedAt: new Date().toISOString()
+      } : drum
     );
     this.drumsSubject.next(updatedDrums);
   }
