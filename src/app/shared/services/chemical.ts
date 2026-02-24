@@ -8,7 +8,7 @@ import { Chemical } from '../models/chemical.type';
 })
 export class ChemicalService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/chemicals';
+  private apiUrl = 'https://waste-api-d9bjf7dwhxb6amfa.canadacentral-01.azurewebsites.net/api/chemicals';
 
   getChemicals(): Observable<Chemical[]> {
     return this.http.get<Chemical[]>(this.apiUrl);

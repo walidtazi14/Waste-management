@@ -9,7 +9,7 @@ import { DrumContent } from '../models/drum.type';
 })
 export class DrumService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/drums';
+  private apiUrl ='https://waste-api-d9bjf7dwhxb6amfa.canadacentral-01.azurewebsites.net/api/drums';
 
   getDrums(): Observable<Drum[]> {
     return this.http.get<Drum[]>(this.apiUrl);
