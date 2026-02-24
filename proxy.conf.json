@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://waste-api-d9bjf7dwhxb6amfa.canadacentral-01.azurewebsites.net",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

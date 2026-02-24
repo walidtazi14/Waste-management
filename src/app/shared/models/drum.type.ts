@@ -6,21 +6,21 @@ export type DrumSize = '5' | '14' | '20' | '30' | '55';
 export type DrumType = 'Poly' | 'Steel' | 'DF' | 'DM' | 'DP' | 'CF';
 
 export interface DrumContent {
-  ChemicalId: number;
+  chemicalId: number;
   qty: string;
   size: string;
   nfpa: string;
-  Chemical: Chemical;
+  chemical: Chemical;
 }
 
 export interface Drum {
   id: number;
-  DrumId: string;
-  Status: DrumStatus;
-  TreatmentCode: string;
-  Generator: string;
-  DrumSize: DrumSize;
-  Oxidizer: boolean;
-  UpdatedAt: string;
-  Contents: DrumContent[];
+  drumId: string;
+  status: DrumStatus;
+  treatmentCode: string;
+  generator: string;
+  drumSize: DrumSize;
+  oxidizer: boolean;
+  updatedAt: string;
+  contents: DrumContent[];
 }

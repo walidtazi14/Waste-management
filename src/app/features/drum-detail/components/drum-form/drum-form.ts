@@ -37,10 +37,10 @@ export class DrumForm implements OnChanges {
     // Listen to form changes and emit them up to the parent
     this.drumForm.valueChanges.subscribe(value => {
       this.formChange.emit({
-        Status: value.status,
-        Generator: value.generator,
-        DrumSize: value.drumSize,
-        TreatmentCode: value.treatmentCode
+        status: value.status,
+        generator: value.generator,
+        drumSize: value.drumSize,
+        treatmentCode: value.treatmentCode
       });
     });
   }
@@ -49,10 +49,10 @@ export class DrumForm implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['drum'] && changes['drum'].currentValue) {
       this.drumForm.patchValue({
-        status: this.drum.Status,
-        generator: this.drum.Generator,
-        drumSize: this.drum.DrumSize,
-        treatmentCode: this.drum.TreatmentCode
+        status: this.drum.status,
+        generator: this.drum.generator,
+        drumSize: this.drum.drumSize,
+        treatmentCode: this.drum.treatmentCode
       }, { emitEvent: false });
     }
   }

@@ -14,36 +14,36 @@ export class ChemicalTable {
   @Output() chemicalsChange = new EventEmitter<DrumContent[]>();
 
   addChemical() {
-    const nextId = this.chemicals.length > 0 ? Math.max(...this.chemicals.map(c => c.Chemical.id)) + 1 : 1;
+    const nextId = this.chemicals.length > 0 ? Math.max(...this.chemicals.map(c => c.chemical.id)) + 1 : 1;
     const newContent: DrumContent = {
-      ChemicalId: nextId,
+      chemicalId: nextId,
       qty: '1',
       size: '',
       nfpa: '',
-      Chemical: {
+      chemical: {
         id: nextId,
         name: '',
         state: '',
-        wasteCode: { code: '', Class: '', subclass: '', group: '' }
+        wasteCode: { code: '', class: '', subclass: '', group: '' }
       }
     };
     this.chemicalsChange.emit([...this.chemicals, newContent]);
   }
 
   removeChemical(id: number) {
-    const updated = this.chemicals.filter(c => c.Chemical.id !== id);
+    const updated = this.chemicals.filter(c => c.chemical.id !== id);
     this.chemicalsChange.emit(updated);
   }
 
   // We updated this to take a string value directly
   updateChemical(id: number, field: string, value: string) {
     const updated = this.chemicals.map(c => {
-      if (c.Chemical.id === id) {
+      if (c.chemical.id === id) {
         if (field === 'name' || field === 'state') {
-          return { ...c, Chemical: { ...c.Chemical, [field]: value } };
+          return { ...c, chemical: { ...c.chemical, [field]: value } };
         }
         if (field === 'wasteCode') {
-          return { ...c, Chemical: { ...c.Chemical, wasteCode: { ...c.Chemical.wasteCode, code: value } } };
+          return { ...c, chemical: { ...c.chemical, wasteCode: { ...c.chemical.wasteCode, code: value } } };
         }
         return { ...c, [field]: value };
       }
@@ -55,10 +55,10 @@ export class ChemicalTable {
   // NEW METHOD: When the dropdown makes a selection, auto-fill both fields
   onChemicalSelected(id: number, selection: any) {
     const updated = this.chemicals.map(c =>
-      c.Chemical.id === id ? {
+      c.chemical.id === id ? {
         ...c,
         Chemical: {
-          ...c.Chemical,
+          ...c.chemical,
           name: selection.name,
           wasteCode: selection.wasteCode || { code: selection.wasteCodes || '', Class: '', subclass: '', group: '' }
         }

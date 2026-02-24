@@ -27,8 +27,6 @@ export class ChemicalSearch {
     this.valueChange.emit(query);
 
     if (query.length > 1) {
-      this.filteredChemicals = this.chemicalService.searchChemicals({ name: query });
-      this.isOpen = this.filteredChemicals.length > 0;
       this.chemicalService.searchChemicals({ name: query }).subscribe(results => {
         this.filteredChemicals = results;
         this.isOpen = this.filteredChemicals.length > 0;

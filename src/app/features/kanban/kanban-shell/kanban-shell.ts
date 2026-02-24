@@ -12,12 +12,13 @@ import { KanbanColumnComponent } from '../components/kanban-column/kanban-column
 })
 export class KanbanShell {
   private drumService = inject(DrumService);
-  drums$ = this.drumService.drums$;
+  drums$ = this.drumService.getDrums();
 
   statuses: DrumStatus[] = ['IN PROGRESS', 'WAITING APPROVAL', 'WAITING EXPEDITION', 'DONE'];
 
   getDrumsByStatus(status: DrumStatus, drums: Drum[] | null): Drum[] {
     if (!drums) return [];
-    return drums.filter(d => d.Status === status);
+
+    return drums.filter(d => d.status === status);
   }
 }

@@ -1,6 +1,6 @@
 export interface WasteCode {
   code: string;
-  Class: string;
+  class: string;
   subclass: string;
   group: string;
 }

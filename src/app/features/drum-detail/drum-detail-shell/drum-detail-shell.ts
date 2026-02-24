@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DrumService } from '../../../shared/services/drum';
@@ -15,6 +15,7 @@ import { ChemicalTable } from '../components/chemical-table/chemical-table'; // 
 export class DrumDetailShell implements OnInit {
   private route = inject(ActivatedRoute);
   private drumService = inject(DrumService);
+  private cdr = inject(ChangeDetectorRef);
 
   drum: Drum | undefined;
   mappedChemicals: DrumContent[] = [];
@@ -26,10 +27,12 @@ export class DrumDetailShell implements OnInit {
 
     // 2. Fetch the drum from our service
     if (id) {
-      this.drum = this.drumService.getDrumById(+id); // Parse to number
-      if (this.drum) {
-        this.mappedChemicals = this.drum.Contents || [];
-      }
+      this.drumService.getDrumById(id).subscribe(drum => {
+        this.drum = drum;
+        this.mappedChemicals = this.drum?.contents || (this.drum as any)?.Contents || [];
+        this.cdr.markForCheck();
+      });
+
     }
   }
 
@@ -40,19 +43,21 @@ export class DrumDetailShell implements OnInit {
   onChemicalsChanged(updatedChemicals: DrumContent[]) {
     this.mappedChemicals = updatedChemicals;
 
-    this.pendingChanges = { ...this.pendingChanges, Contents: updatedChemicals };
+    this.pendingChanges = { ...this.pendingChanges, contents: updatedChemicals };
 
     // Update local drum object so UI stays synced immediately
     if (this.drum) {
-      this.drum.Contents = updatedChemicals;
+      this.drum.contents = updatedChemicals;
     }
   }
 
   // 4. Save logic (mocked for now)
   saveDrum() {
     if (this.drum) {
-      this.drumService.updateDrum({ ...this.pendingChanges, id: this.drum.id });
-      this.pendingChanges = {};
+      this.drumService.updateDrum({ ...this.pendingChanges, id: this.drum.id }).subscribe(updatedDrum => {
+        this.drum = updatedDrum;
+        this.pendingChanges = {};
+      });
     }
   }
 }
