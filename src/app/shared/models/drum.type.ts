@@ -20,6 +20,10 @@ export interface Drum {
   treatmentCode: string;
   generator: string;
   drumSize: DrumSize;
+  drumType: DrumType;
+  unNumber: string;
+  hazardClass: string;
+  createdAt: string;
   oxidizer: boolean;
   updatedAt: string;
   contents: DrumContent[];

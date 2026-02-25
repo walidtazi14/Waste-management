@@ -40,7 +40,10 @@ export class DrumForm implements OnChanges {
         status: value.status,
         generator: value.generator,
         drumSize: value.drumSize,
-        treatmentCode: value.treatmentCode
+        treatmentCode: value.treatmentCode,
+        drumType: value.drumType,
+        unNumber: value.unNumber,
+        hazardClass: value.hazardClass
       });
     });
   }
@@ -52,7 +55,10 @@ export class DrumForm implements OnChanges {
         status: this.drum.status,
         generator: this.drum.generator,
         drumSize: this.drum.drumSize,
-        treatmentCode: this.drum.treatmentCode
+        treatmentCode: this.drum.treatmentCode,
+        drumType: this.drum.drumType,
+        unNumber: this.drum.unNumber,
+        hazardClass: this.drum.hazardClass
       }, { emitEvent: false });
     }
   }
