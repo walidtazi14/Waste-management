@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DrumContent } from '../../../../shared/models/drum.type';
 import { WasteCode } from '../../../../shared/models/chemical.type';
 import { ChemicalSearch } from '../../../../shared/components/chemical-search/chemical-search';
@@ -6,7 +7,7 @@ import { ChemicalSearch } from '../../../../shared/components/chemical-search/ch
 @Component({
   selector: 'app-chemical-table',
   standalone: true,
-  imports: [ChemicalSearch],
+  imports: [ChemicalSearch, CommonModule],
   templateUrl: './chemical-table.html'
 })
 export class ChemicalTable {
@@ -57,13 +58,45 @@ export class ChemicalTable {
     const updated = this.chemicals.map(c =>
       c.chemical.id === id ? {
         ...c,
-        Chemical: {
+        chemical: {
           ...c.chemical,
           name: selection.name,
-          wasteCode: selection.wasteCode || { code: selection.wasteCodes || '', Class: '', subclass: '', group: '' }
+          wasteCode: selection.wasteCode || { code: selection.wasteCodes || '', class: '', subclass: '', group: '' }
         }
       } : c
     );
     this.chemicalsChange.emit(updated);
+  }
+
+  isRowInvalid(index: number): boolean {
+    if (this.chemicals.length === 0) return false;
+
+    const base = this.chemicals[0];
+    const current = this.chemicals[index];
+
+    const baseCode = base.chemical.wasteCode;
+    const currentCode = current.chemical.wasteCode;
+
+    if (!baseCode?.class || !currentCode?.class) return false;
+
+    // 1. Class must match base
+    if (currentCode.class !== baseCode.class) {
+      return true;
+    }
+
+    // 2. Subclass logic
+    if (baseCode.subclass) {
+      // Base has subclass: current must match it or be empty
+      if (currentCode.subclass && currentCode.subclass !== baseCode.subclass) {
+        return true;
+      }
+    } else {
+      // Base has no subclass: current must have no subclass
+      if (currentCode.subclass) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -1,4 +1,4 @@
-<div class="overflow-x-auto border border-slate-200 rounded-lg">
+<div class="overflow-visible border border-slate-200 rounded-lg">
   <table class="w-full text-left text-sm text-slate-600">
     <thead class="bg-slate-50 text-xs uppercase font-bold text-slate-500 border-b border-slate-200">
       <tr>
@@ -13,7 +13,7 @@
     </thead>
 <tbody class="divide-y divide-slate-100 bg-white">
       @for (chem of chemicals; track chem.chemicalId; let i = $index) {
-        <tr class="hover:bg-slate-50 transition-colors group">
+        <tr class="transition-colors group" [ngClass]="isRowInvalid(i) ? 'bg-red-100 hover:bg-red-200' : 'hover:bg-slate-50'">
           <td class="px-4 py-3 font-medium text-slate-400 text-center">{{ i + 1 }}</td>
 
           <td class="px-4 py-3">
